@@ -45,7 +45,7 @@ MonoBehaviour:
   m_MinSize: {x: 681, y: 492}
   m_MaxSize: {x: 14004, y: 14042}
   vertical: 0
-  controlID: 115
+  controlID: 72
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -89,7 +89,7 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 284
-    height: 483
+    height: 482
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
-    y: 483
+    y: 482
     width: 1148
-    height: 271
+    height: 272
   m_MinSize: {x: 232, y: 271}
   m_MaxSize: {x: 10002, y: 10021}
   m_ActualView: {fileID: 14}
@@ -144,7 +144,7 @@ MonoBehaviour:
     y: 0
     width: 1440
     height: 804
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &7
 MonoBehaviour:
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_MinSize: {x: 404, y: 492}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
-  controlID: 26
+  controlID: 73
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -230,11 +230,11 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 1148
-    height: 483
+    height: 482
   m_MinSize: {x: 404, y: 221}
   m_MaxSize: {x: 8004, y: 4021}
   vertical: 0
-  controlID: 27
+  controlID: 49
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -252,7 +252,7 @@ MonoBehaviour:
     x: 284
     y: 0
     width: 864
-    height: 483
+    height: 482
   m_MinSize: {x: 204, y: 221}
   m_MaxSize: {x: 4004, y: 4021}
   m_ActualView: {fileID: 17}
@@ -342,9 +342,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 577
+    y: 576
     width: 1146
-    height: 250
+    height: 251
   m_SearchFilter:
     m_NameFilter: 
     m_ClassNames: []
@@ -363,13 +363,13 @@ MonoBehaviour:
   m_LastFolders:
   - Assets/Resources/buildings
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: /Users/nikita/Desktop/Medieval-Card-Game
+  m_LastProjectPath: /Users/nikita/Desktop/medieval-cards/Medieval-Card-Game
   m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 11}
-    m_SelectedIDs: f42d0000
-    m_LastClickedID: 11764
-    m_ExpandedIDs: 00000000c6260000d62600007c270000f42d000000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 10}
+    m_SelectedIDs: 80270000
+    m_LastClickedID: 10112
+    m_ExpandedIDs: 00000000c4260000ec260000802700004228000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -397,7 +397,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000c6260000d62600007c270000
+    m_ExpandedIDs: 00000000c4260000ec2600008027000042280000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -428,18 +428,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c6230000d4290000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: low poly medieval buildings
-      m_OriginalName: low poly medieval buildings
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 10656
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 5}
     m_CreateAssetUtility:
@@ -510,12 +510,12 @@ MonoBehaviour:
     x: 0
     y: 94
     width: 282
-    height: 462
+    height: 461
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c2e7f3ff
-    m_LastClickedID: -792638
-    m_ExpandedIDs: 50f5f3ff10f6f3ff9211fcff9e11fcff8e12fcff0613fcff2c1bfcff062efcffb283fcff2a84fcff9ca6fcfffca6fcff74a7fcffcca9fcffdeb1fcff56b2fcff24bcfcff9cbcfcff0ce0fcff84e0fcfffaeefcff72effcffeaeffcffc4d4fdff3cd5fdff78a3feff9ca3feff14a4feff4cc4feff86ddfeff4000ffffd425fffff02dffff404dffff5657ffff8861ffffa6fbffff00000000f02f0000
+    m_SelectedIDs: 062d0000
+    m_LastClickedID: 11526
+    m_ExpandedIDs: 8e03ffff3204ffff6605ffffc609ffff6a0affff9e0bffff9a16ffff3e17ffff7218ffff4229ffff222affff562bffff6431ffff0632ffff3a33ffff027dffffc0f6ffffa6fbffff0000000014280000e42a0000f42c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -531,7 +531,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 0
-      m_ClientGUIView: {fileID: 0}
+      m_ClientGUIView: {fileID: 4}
     m_SearchString: 
   m_ExpandedScenes:
   - Game
@@ -563,7 +563,7 @@ MonoBehaviour:
     x: 286
     y: 94
     width: 860
-    height: 462
+    height: 461
   m_SceneLighting: 1
   lastFramingTime: 3430.0593180060387
   m_2DMode: 0
@@ -597,7 +597,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.31075078, y: -0.42360285, z: 0.15742193, w: -0.8361895}
     speed: 2
-    m_Value: {x: -0.31075078, y: -0.42360285, z: 0.15742193, w: -0.8361895}
+    m_Value: {x: 0.3107508, y: 0.42360288, z: -0.15742193, w: 0.83618957}
   m_Size:
     m_Target: 1.2643695
     speed: 2
@@ -638,7 +638,7 @@ MonoBehaviour:
     x: 286
     y: 94
     width: 860
-    height: 462
+    height: 461
   m_MaximizeOnPlay: 0
   m_Gizmos: 0
   m_Stats: 0
@@ -649,8 +649,8 @@ MonoBehaviour:
     m_VRangeLocked: 0
     m_HBaseRangeMin: -430
     m_HBaseRangeMax: 430
-    m_VBaseRangeMin: -222.5
-    m_VBaseRangeMax: 222.5
+    m_VBaseRangeMin: -222
+    m_VBaseRangeMax: 222
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -668,9 +668,9 @@ MonoBehaviour:
       x: 0
       y: 17
       width: 860
-      height: 445
+      height: 444
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 430, y: 222.5}
+    m_Translation: {x: 430, y: 222}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -678,14 +678,14 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -430
-      y: -222.5
+      y: -222
       width: 860
-      height: 445
+      height: 444
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_TargetTexture: {fileID: 0}
   m_CurrentColorSpace: 0
-  m_LastWindowPixelSize: {x: 1720, y: 924}
+  m_LastWindowPixelSize: {x: 1720, y: 922}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 00000000000100000100

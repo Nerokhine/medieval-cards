@@ -55,6 +55,7 @@
      <Compile Include="Assets\_Scripts\Initial.cs" />
      <Compile Include="Assets\_Scripts\TileController.cs" />
      <None Include="Assets\Resources\buildings\readme.txt" />
+     <None Include="Assets\Resources\characters\ReadMe.txt" />
  <Reference Include="UnityEngine.CoreModule">
  <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
  </Reference>

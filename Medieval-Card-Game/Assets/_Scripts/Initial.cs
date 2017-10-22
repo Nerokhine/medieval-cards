@@ -25,8 +25,8 @@ public class Initial : MonoBehaviour {
 				);
 					
 				tiles [x, z] = tileObject;
-				tiles [x, z].GetComponent<TileController> ().x = x;
-				tiles [x, z].GetComponent<TileController> ().z = z;
+				tiles [x, z].GetComponentInChildren<TileController> ().x = x;
+				tiles [x, z].GetComponentInChildren<TileController> ().z = z;
 			}
 		}
 	}
