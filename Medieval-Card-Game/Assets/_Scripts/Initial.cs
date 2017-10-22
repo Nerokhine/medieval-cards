@@ -6,8 +6,11 @@ public class Initial : MonoBehaviour {
 	public static int dimX = 15;
 	public static int dimZ = 15;
 	public static GameObject[,] tiles;
+	GameObject panel;
 
 	void Start () {
+		// test
+		panel = GameObject.Find("Panel");
 		// Create a grid
 		tiles = new GameObject[dimX,dimZ];
 
@@ -24,6 +27,23 @@ public class Initial : MonoBehaviour {
 				tiles [x, z] = tileObject;
 				tiles [x, z].GetComponent<TileController> ().x = x;
 				tiles [x, z].GetComponent<TileController> ().z = z;
+			}
+		}
+	}
+
+	void Update(){
+		RectTransform rect = panel.GetComponent<RectTransform> ();
+		if (rect.anchoredPosition.x > 0) {
+			if (rect.anchoredPosition.x - 40 < 0) {
+				rect.anchoredPosition = new Vector2 (
+					0,
+					rect.anchoredPosition.y
+				);
+			} else {
+				rect.anchoredPosition = new Vector2 (
+					rect.anchoredPosition.x - 40,
+					rect.anchoredPosition.y
+				);
 			}
 		}
 	}
