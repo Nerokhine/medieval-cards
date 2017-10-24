@@ -21,9 +21,9 @@ function Update () {
 }
 
 function FixedUpdate (){
-	animator.SetFloat("Walk",v);
-	animator.SetFloat("Run",run);
-	animator.SetFloat("Turn",h);
+	//animator.SetFloat("Walk",v);
+	//animator.SetFloat("Run",run);
+	//animator.SetFloat("Turn",h);
 }
 
 function Sprinting(){
