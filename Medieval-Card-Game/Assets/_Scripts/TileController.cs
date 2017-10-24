@@ -171,16 +171,22 @@ public class TileController : MonoBehaviour {
 	public delegate void Fin();
 
 	IEnumerator moveToCoroutine(List<Vector2> moveList, GameObject movingEntity){
+		int x = 0;
+		bool last = false;
 		foreach (Vector2 vector in moveList) {
+			x++;
+			if (x == moveList.Count) {
+				last = true;
+			}
 			TileController controller = movingEntity.transform.parent.GetComponentInChildren<TileController> ();
 			if (vector.x == controller.x && vector.y < controller.z) {
-				controller.movePlayer (Direction.Down, SetFinTrue);
+				controller.movePlayer (Direction.Down, SetFinTrue, last);
 			} else if (vector.x == controller.x && vector.y > controller.z) {
-				controller.movePlayer (Direction.Up, SetFinTrue);
+				controller.movePlayer (Direction.Up, SetFinTrue, last);
 			} else if (vector.x < controller.x && vector.y == controller.z) {
-				controller.movePlayer (Direction.Left, SetFinTrue);
+				controller.movePlayer (Direction.Left, SetFinTrue, last);
 			} else if (vector.x > controller.x && vector.y == controller.z) {
-				controller.movePlayer (Direction.Right, SetFinTrue);
+				controller.movePlayer (Direction.Right, SetFinTrue, last);
 			} else {
 				Debug.Log ("Bad vector input");
 			}
@@ -193,8 +199,8 @@ public class TileController : MonoBehaviour {
 	}
 
 
-	void movePlayer(Direction direction, Fin fin){
-		StartCoroutine(move(direction, fin));
+	void movePlayer(Direction direction, Fin fin, bool last){
+		StartCoroutine(move(direction, fin, last));
 	}
 
 	TileController getController(int x1, int z1){
@@ -219,7 +225,7 @@ public class TileController : MonoBehaviour {
 	}
 
 	//public static bool fin = false;
-	IEnumerator move(Direction direction, Fin fin){
+	IEnumerator move(Direction direction, Fin fin, bool last){
 		int xAmt = 0;
 		int zAmt = 0;
 		float rotationAmt = 0;
@@ -241,6 +247,7 @@ public class TileController : MonoBehaviour {
 		getController (x + xAmt, z + zAmt).entity.transform.parent = Initial.tiles [x + xAmt, z + zAmt].transform;
 		entity = null;
 		getController (x + xAmt, z + zAmt).entity.transform.eulerAngles = new Vector3 (0, rotationAmt);
+		Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().enabled = true;
 
 		while (moveCondition(getController (x + xAmt, z + zAmt).entity.transform.localPosition, direction)) {
 			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator>().SetFloat("Walk",1);
@@ -248,15 +255,18 @@ public class TileController : MonoBehaviour {
 			yield return new WaitForSeconds(0.01f);
 		}
 
-		Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator>().SetFloat("Walk",0);
-		Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().SetFloat ("Run", 0f);
+		if (!last) {
+			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().enabled = false;
+		} else {
+			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().SetFloat ("Walk", 0);
+			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().SetFloat ("Run", 0f);
 
-		while (getController (x + xAmt, z + zAmt).entity.transform.localPosition.z != 0 && 
-			getController (x + xAmt, z + zAmt).entity.transform.localPosition.x != 0) {
-			getController(x + xAmt,z + zAmt).entity.transform.localPosition = new Vector3 (0f, 0f, 0f);
-			yield return new WaitForSeconds(0.01f);
+			while (getController (x + xAmt, z + zAmt).entity.transform.localPosition.z != 0 &&
+			       getController (x + xAmt, z + zAmt).entity.transform.localPosition.x != 0) {
+				getController (x + xAmt, z + zAmt).entity.transform.localPosition = new Vector3 (0f, 0f, 0f);
+				yield return new WaitForSeconds (0.01f);
+			}
 		}
-		//Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().enabled = true;
 	
 		fin ();
 		yield return null;
