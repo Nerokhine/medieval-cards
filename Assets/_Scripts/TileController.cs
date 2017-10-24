@@ -159,13 +159,30 @@ public class TileController : MonoBehaviour {
 		//moveList.Add(new Vector2(x + 2, z - 2));
 		GameObject movingEntity = entity;
 		moveTo (moveList, movingEntity);
+		shortestPath ();
 	}
 
-	//List<Vector2> shortestPath;
 
 	void shortestPath(){
 		int[,] array;
 		array = new int[Initial.dimX + 2,Initial.dimZ + 2];
+
+		// obstacles in the game
+		for (int x = 0; x < Initial.dimX; x++) {
+			for (int z = 0; z < Initial.dimZ; z++) {
+				if (getController (x, z).entity != null) {
+					array [x, z] = 1;
+				} else {
+					array [x, z] = 0;
+				}
+			}
+		}
+
+		array [4, 7] = 1;
+		array [4, 6] = 1;
+		array [5, 6] = 1;
+		array [6, 6] = 1;
+		array [7, 6] = 1;
 
 		// boundaries of the game
 		for(int x = 0; x < Initial.dimX; x ++){
@@ -182,70 +199,81 @@ public class TileController : MonoBehaviour {
 
 		}
 
-		// obstacles in the game
-		for (int x = 0; x < Initial.dimX; x++) {
-			for (int z = 0; z < Initial.dimZ; z++) {
-				if (getController (x, z).entity != null) {
-					array [x, z] = 1;
+		List<Vector2> path = new List<Vector2> ();
+
+		shortPath (1, 1, 5, 7, array, path);
+
+		string debug = "";
+		for(int y = Initial.dimZ - 1; y >= 0; y --){
+			for(int x = 0; x < Initial.dimX; x ++){
+				foreach (Vector2 vector in path) {
+					if (vector.x == x && vector.y == y) {
+						array [x, y] = 2;
+					}
 				}
 			}
 		}
 
+		for(int y = Initial.dimZ - 1; y >= 0; y --){
+			for(int x = 0; x < Initial.dimX; x ++){
+				debug += array[x, y] + " ";
+			}
+			debug += "\n";
+		}
+
+		Debug.Log (debug);
+		//Debug.Log (path);
 
 		//shortestPath = new List<Vector2> ();
 
 
 	}
 
-	/*void shortestPath(int x1, int y1, int x2, int y2, int [][] array){ 
+	void shortPath(int x1, int y1, int x2, int y2, int[,] masterArray, List<Vector2> path){
+		int [,] array;
+		int [,] array2;
+		array = new int[Initial.dimX + 2,Initial.dimZ + 2];
+		array2 = new int[Initial.dimX + 2,Initial.dimZ + 2];
 
-		if(x1 == x2 && y1 == y2){ 
-			shortestPath.Add(new Vector2(x1, y1));//;[x1][y1] = 2; 
-			return array; 
-		}else if ((array.second)[x1][y1] == 1 || (array.second)[x1][y1] == 2){ //cannot go outside bounds 
-			array.first = 100000; 
-			return array; 
-		} else if ((array.first) > 15){ //to make algorithm more efficient, disregard obvious poor path choices 
-			array.first = 100000; 
-			return array; 
-		} 
 
-		int ** newArray; 
+		for(int x = 0; x < Initial.dimX; x ++){
+			for(int y = 0; y < Initial.dimZ; y ++){
+				array[x, y] = 666;
+				array2[x, y] = masterArray[x, y];
+			}
+		}
 
-		newArray = new int *[dim]; 
-		for(int x = 0; x < dim; x ++){ 
-			newArray[x] = new int[dim]; 
-		} 
+		array[x1, y1] = 0;
+		shortestPathHelper(x1, y1, x2, y2, array, array2);
 
-		for(int x = 0; x < dim; x ++){ 
-			for(int y = 0; y < dim; y ++){ 
-				newArray[x][y] = (array.second)[x][y]; 
-			} 
-		}  
-		newArray[x1][y1] = 2; 
-		pair<int, int **> myPair = make_pair(array.first + 1, newArray); 
+		findRoute(x2, y2, array, path);
+	}
 
-		pair<int, int **> temp1 = shortestPath(x1 + 1, y1, x2, y2, myPair); 
-		pair<int, int **> temp2 = shortestPath(x1 - 1, y1, x2, y2, myPair); 
-		pair<int, int **> temp3 = shortestPath(x1, y1 + 1, x2, y2, myPair); 
-		pair<int, int **> temp4 = shortestPath(x1, y1 - 1, x2, y2, myPair); 
 
-		int minimum = min(min(temp1.first, temp2.first), min(temp3.first, temp4.first)); 
-		if(temp1.first == minimum){ 
-			if(temp1.first != myPair.first) deleteArray(newArray); 
-			return temp1; 
-		}else if(temp2.first == minimum){ 
-			if(temp2.first != myPair.first) deleteArray(newArray); 
-			return temp2; 
-		}else if(temp3.first == minimum){ 
-			if(temp3.first != myPair.first) deleteArray(newArray); 
-			return temp3; 
-		}else{ 
-			if(temp4.first != myPair.first) deleteArray(newArray); 
-			return temp4; 
-		} 
+	void shortestPathHelper(int x1, int y1, int x2, int y2, int [,]array, int [,] array2){
+		if(array2[x1 + 1, y1] == 0 && array[x1 + 1, y1] > array[x1, y1] + 1) array[x1 + 1, y1] = array[x1, y1] + 1;
+		if(array2[x1 - 1, y1] == 0 && array[x1 - 1, y1] > array[x1, y1] + 1) array[x1 - 1, y1] = array[x1, y1] + 1;
+		if(array2[x1, y1 + 1] == 0 && array[x1, y1 + 1] > array[x1, y1] + 1) array[x1, y1 + 1] = array[x1, y1] + 1;
+		if(array2[x1, y1 - 1] == 0 && array[x1, y1 - 1] > array[x1, y1] + 1) array[x1, y1 - 1] = array[x1, y1] + 1;
 
-	}*/
+		array2[x1, y1] = 1;
+
+		if(array2[x1 + 1, y1] == 0) shortestPathHelper(x1 + 1, y1, x2, y2, array, array2);
+		if(array2[x1 - 1, y1] == 0) shortestPathHelper(x1 - 1, y1, x2, y2, array, array2);
+		if(array2[x1, y1 + 1] == 0) shortestPathHelper(x1, y1 + 1, x2, y2, array, array2);
+		if(array2[x1, y1 - 1] == 0) shortestPathHelper(x1, y1 - 1, x2, y2, array, array2);
+	}
+
+	void findRoute(int x1, int y1, int [,] array, List<Vector2> path){
+		//string str = x1 + " " + y1 + "\n";
+		//Debug.Log (str);
+		path.Add(new Vector2(x1, y1));
+		if(array[x1 + 1, y1] < array[x1, y1]) findRoute(x1 + 1, y1, array, path);
+		else if(array[x1 - 1, y1] < array[x1, y1]) findRoute(x1 - 1, y1, array, path);
+		else if(array[x1, y1 + 1] < array[x1, y1]) findRoute(x1, y1 + 1, array, path);
+		else if(array[x1, y1 - 1] < array[x1, y1]) findRoute(x1, y1 - 1, array, path);
+	}
+
 
 	void moveTo(List<Vector2> moveList, GameObject movingEntity){
 		StartCoroutine (moveToCoroutine(moveList, movingEntity));
