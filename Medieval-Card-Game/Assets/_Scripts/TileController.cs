@@ -143,6 +143,8 @@ public class TileController : MonoBehaviour {
 		}
 	}
 
+
+
 	void playerConstruction(){
 		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("characters/Prefabs/Char_2"), tileSpawner.transform);
 		tileObject.transform.localScale =  new Vector3(0.2f, 0.2f, 0.2f);
@@ -158,6 +160,92 @@ public class TileController : MonoBehaviour {
 		GameObject movingEntity = entity;
 		moveTo (moveList, movingEntity);
 	}
+
+	//List<Vector2> shortestPath;
+
+	void shortestPath(){
+		int[,] array;
+		array = new int[Initial.dimX + 2,Initial.dimZ + 2];
+
+		// boundaries of the game
+		for(int x = 0; x < Initial.dimX; x ++){
+			//horizontal edge
+			array[x, 0] = 1;
+			array[x,Initial.dimX - 1] = 1;
+
+		}
+
+		for(int x = 0; x < Initial.dimZ; x ++){
+			//vertical edge
+			array[0, x] = 1;
+			array[Initial.dimZ - 1, x] = 1;
+
+		}
+
+		// obstacles in the game
+		for (int x = 0; x < Initial.dimX; x++) {
+			for (int z = 0; z < Initial.dimZ; z++) {
+				if (getController (x, z).entity != null) {
+					array [x, z] = 1;
+				}
+			}
+		}
+
+
+		//shortestPath = new List<Vector2> ();
+
+
+	}
+
+	/*void shortestPath(int x1, int y1, int x2, int y2, int [][] array){ 
+
+		if(x1 == x2 && y1 == y2){ 
+			shortestPath.Add(new Vector2(x1, y1));//;[x1][y1] = 2; 
+			return array; 
+		}else if ((array.second)[x1][y1] == 1 || (array.second)[x1][y1] == 2){ //cannot go outside bounds 
+			array.first = 100000; 
+			return array; 
+		} else if ((array.first) > 15){ //to make algorithm more efficient, disregard obvious poor path choices 
+			array.first = 100000; 
+			return array; 
+		} 
+
+		int ** newArray; 
+
+		newArray = new int *[dim]; 
+		for(int x = 0; x < dim; x ++){ 
+			newArray[x] = new int[dim]; 
+		} 
+
+		for(int x = 0; x < dim; x ++){ 
+			for(int y = 0; y < dim; y ++){ 
+				newArray[x][y] = (array.second)[x][y]; 
+			} 
+		}  
+		newArray[x1][y1] = 2; 
+		pair<int, int **> myPair = make_pair(array.first + 1, newArray); 
+
+		pair<int, int **> temp1 = shortestPath(x1 + 1, y1, x2, y2, myPair); 
+		pair<int, int **> temp2 = shortestPath(x1 - 1, y1, x2, y2, myPair); 
+		pair<int, int **> temp3 = shortestPath(x1, y1 + 1, x2, y2, myPair); 
+		pair<int, int **> temp4 = shortestPath(x1, y1 - 1, x2, y2, myPair); 
+
+		int minimum = min(min(temp1.first, temp2.first), min(temp3.first, temp4.first)); 
+		if(temp1.first == minimum){ 
+			if(temp1.first != myPair.first) deleteArray(newArray); 
+			return temp1; 
+		}else if(temp2.first == minimum){ 
+			if(temp2.first != myPair.first) deleteArray(newArray); 
+			return temp2; 
+		}else if(temp3.first == minimum){ 
+			if(temp3.first != myPair.first) deleteArray(newArray); 
+			return temp3; 
+		}else{ 
+			if(temp4.first != myPair.first) deleteArray(newArray); 
+			return temp4; 
+		} 
+
+	}*/
 
 	void moveTo(List<Vector2> moveList, GameObject movingEntity){
 		StartCoroutine (moveToCoroutine(moveList, movingEntity));
@@ -264,6 +352,7 @@ public class TileController : MonoBehaviour {
 			while (getController (x + xAmt, z + zAmt).entity.transform.localPosition.z != 0 &&
 			       getController (x + xAmt, z + zAmt).entity.transform.localPosition.x != 0) {
 				getController (x + xAmt, z + zAmt).entity.transform.localPosition = new Vector3 (0f, 0f, 0f);
+				getController (x + xAmt, z + zAmt).entity.transform.eulerAngles = new Vector3 (0, rotationAmt);
 				yield return new WaitForSeconds (0.01f);
 			}
 		}
