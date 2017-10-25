@@ -198,7 +198,8 @@ public class TileController : MonoBehaviour {
 		// obstacles in the game
 		for (int x = 0; x < Initial.dimX; x++) {
 			for (int z = 0; z < Initial.dimZ; z++) {
-				if (getController (x, z).entity != null) {
+				// can't go on characterPath blocks or entity blocks
+				if (getController (x, z).entity != null || getController (x, z).characterPath) {
 					array [x, z] = 1;
 				} else {
 					array [x, z] = 0;
