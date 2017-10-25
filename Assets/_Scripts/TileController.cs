@@ -50,14 +50,24 @@ public class TileController : MonoBehaviour {
 
 	void OnMouseOver () {
 		if (Input.GetMouseButtonDown (0)) { // left click
-			if (selectedTile != null) {
-				selectedTile.GetComponent<TileController>().Select (false);
-			}
-			selectedTile = gameObject;
-			Select (true);
-			if (entity == null) {
+			if (entity == null && selectedTile == null) {
 				//wallConstruction ();
 				playerConstruction ();
+			} else {
+				if (selectedTile != null && selectedTile.GetComponent<TileController> ().entity.tag == "Unit") {
+					if (selectedTile != gameObject) { // cant move to yourself
+						selectedTile.GetComponent<TileController> ().moveToLocation (new Vector2 (x, z));
+					}
+					selectedTile.GetComponent<TileController> ().Select (false);
+					selectedTile = null;
+				} else{
+					if (selectedTile != null) {
+						selectedTile.GetComponent<TileController> ().Select (false);
+					}
+					selectedTile = gameObject;
+					Select (true);
+				}
+
 			}
 		} else if (Input.GetMouseButtonDown (1)) { // right click
 			if (entity != null) {
@@ -149,23 +159,25 @@ public class TileController : MonoBehaviour {
 		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("characters/Prefabs/Char_2"), tileSpawner.transform);
 		tileObject.transform.localScale =  new Vector3(0.2f, 0.2f, 0.2f);
 		entity = tileObject;
-		List<Vector2> moveList = new List<Vector2>();
-		moveList.Add(new Vector2(x + 1, z));
-		moveList.Add(new Vector2(x + 2, z));
-		moveList.Add(new Vector2(x + 2, z - 1));
-		moveList.Add(new Vector2(x + 1, z - 1));
-		moveList.Add(new Vector2(x + 1, z));
-		moveList.Add(new Vector2(x + 1, z + 1));
-		//moveList.Add(new Vector2(x + 2, z - 2));
+
+		if (selectedTile != null) {
+			selectedTile.GetComponent<TileController> ().Select (false);
+			selectedTile = null;
+		}
+
+
+	}
+
+	public void moveToLocation(Vector2 location){
+		List<Vector2> moveList = shortestPath (new Vector2(x, z), location);
 		GameObject movingEntity = entity;
 		moveTo (moveList, movingEntity);
-		shortestPath ();
 	}
 
 
-	void shortestPath(){
+	List<Vector2> shortestPath(Vector2 start, Vector2 end){
 		int[,] array;
-		array = new int[Initial.dimX + 2,Initial.dimZ + 2];
+		array = new int[Initial.dimX,Initial.dimZ];
 
 		// obstacles in the game
 		for (int x = 0; x < Initial.dimX; x++) {
@@ -178,30 +190,11 @@ public class TileController : MonoBehaviour {
 			}
 		}
 
-		array [4, 7] = 1;
-		array [4, 6] = 1;
-		array [5, 6] = 1;
-		array [6, 6] = 1;
-		array [7, 6] = 1;
-
-		// boundaries of the game
-		for(int x = 0; x < Initial.dimX; x ++){
-			//horizontal edge
-			array[x, 0] = 1;
-			array[x,Initial.dimX - 1] = 1;
-
-		}
-
-		for(int x = 0; x < Initial.dimZ; x ++){
-			//vertical edge
-			array[0, x] = 1;
-			array[Initial.dimZ - 1, x] = 1;
-
-		}
-
 		List<Vector2> path = new List<Vector2> ();
 
-		shortPath (1, 1, 5, 7, array, path);
+		shortPath ((int)start.x, (int)start.y, (int)end.x, (int)end.y, array, path);
+		path.Reverse(); // list is backwards
+		path.RemoveAt (0); // remove first element as it is current position
 
 		string debug = "";
 		for(int y = Initial.dimZ - 1; y >= 0; y --){
@@ -222,9 +215,8 @@ public class TileController : MonoBehaviour {
 		}
 
 		Debug.Log (debug);
-		//Debug.Log (path);
 
-		//shortestPath = new List<Vector2> ();
+		return path;
 
 
 	}
@@ -232,8 +224,8 @@ public class TileController : MonoBehaviour {
 	void shortPath(int x1, int y1, int x2, int y2, int[,] masterArray, List<Vector2> path){
 		int [,] array;
 		int [,] array2;
-		array = new int[Initial.dimX + 2,Initial.dimZ + 2];
-		array2 = new int[Initial.dimX + 2,Initial.dimZ + 2];
+		array = new int[Initial.dimX,Initial.dimZ];
+		array2 = new int[Initial.dimX,Initial.dimZ];
 
 
 		for(int x = 0; x < Initial.dimX; x ++){
@@ -251,27 +243,32 @@ public class TileController : MonoBehaviour {
 
 
 	void shortestPathHelper(int x1, int y1, int x2, int y2, int [,]array, int [,] array2){
-		if(array2[x1 + 1, y1] == 0 && array[x1 + 1, y1] > array[x1, y1] + 1) array[x1 + 1, y1] = array[x1, y1] + 1;
-		if(array2[x1 - 1, y1] == 0 && array[x1 - 1, y1] > array[x1, y1] + 1) array[x1 - 1, y1] = array[x1, y1] + 1;
-		if(array2[x1, y1 + 1] == 0 && array[x1, y1 + 1] > array[x1, y1] + 1) array[x1, y1 + 1] = array[x1, y1] + 1;
-		if(array2[x1, y1 - 1] == 0 && array[x1, y1 - 1] > array[x1, y1] + 1) array[x1, y1 - 1] = array[x1, y1] + 1;
+		if (x1 < 0 || x1 >= Initial.dimX || y1 < 0 || y1 >= Initial.dimZ ||
+			x2 < 0 || x2 >= Initial.dimX || y2 < 0 || y2 >= Initial.dimZ) {
+			return;
+		}
+		if(x1 < Initial.dimX - 1 && array2[x1 + 1, y1] == 0 && array[x1 + 1, y1] > array[x1, y1] + 1) array[x1 + 1, y1] = array[x1, y1] + 1;
+		if(x1 > 0 && array2[x1 - 1, y1] == 0 && array[x1 - 1, y1] > array[x1, y1] + 1) array[x1 - 1, y1] = array[x1, y1] + 1;
+		if(y1 <  Initial.dimZ - 1 && array2[x1, y1 + 1] == 0 && array[x1, y1 + 1] > array[x1, y1] + 1) array[x1, y1 + 1] = array[x1, y1] + 1;
+		if(y1 > 0 && array2[x1, y1 - 1] == 0 && array[x1, y1 - 1] > array[x1, y1] + 1) array[x1, y1 - 1] = array[x1, y1] + 1;
 
 		array2[x1, y1] = 1;
 
-		if(array2[x1 + 1, y1] == 0) shortestPathHelper(x1 + 1, y1, x2, y2, array, array2);
-		if(array2[x1 - 1, y1] == 0) shortestPathHelper(x1 - 1, y1, x2, y2, array, array2);
-		if(array2[x1, y1 + 1] == 0) shortestPathHelper(x1, y1 + 1, x2, y2, array, array2);
-		if(array2[x1, y1 - 1] == 0) shortestPathHelper(x1, y1 - 1, x2, y2, array, array2);
+		if(x1 < Initial.dimX - 1 && array2[x1 + 1, y1] == 0) shortestPathHelper(x1 + 1, y1, x2, y2, array, array2);
+		if(x1 > 0 && array2[x1 - 1, y1] == 0) shortestPathHelper(x1 - 1, y1, x2, y2, array, array2);
+		if(y1 <  Initial.dimZ - 1 && array2[x1, y1 + 1] == 0) shortestPathHelper(x1, y1 + 1, x2, y2, array, array2);
+		if(y1 > 0 && array2[x1, y1 - 1] == 0) shortestPathHelper(x1, y1 - 1, x2, y2, array, array2);
 	}
 
 	void findRoute(int x1, int y1, int [,] array, List<Vector2> path){
-		//string str = x1 + " " + y1 + "\n";
-		//Debug.Log (str);
+		if (x1 < 0 || x1 >= Initial.dimX || y1 < 0 || y1 >= Initial.dimZ) {
+			return;
+		}
 		path.Add(new Vector2(x1, y1));
-		if(array[x1 + 1, y1] < array[x1, y1]) findRoute(x1 + 1, y1, array, path);
-		else if(array[x1 - 1, y1] < array[x1, y1]) findRoute(x1 - 1, y1, array, path);
-		else if(array[x1, y1 + 1] < array[x1, y1]) findRoute(x1, y1 + 1, array, path);
-		else if(array[x1, y1 - 1] < array[x1, y1]) findRoute(x1, y1 - 1, array, path);
+		if(x1 < Initial.dimX - 1 && array[x1 + 1, y1] < array[x1, y1]) findRoute(x1 + 1, y1, array, path);
+		else if(x1 > 0 && array[x1 - 1, y1] < array[x1, y1]) findRoute(x1 - 1, y1, array, path);
+		else if(y1 <  Initial.dimZ - 1 && array[x1, y1 + 1] < array[x1, y1]) findRoute(x1, y1 + 1, array, path);
+		else if(y1 > 0 && array[x1, y1 - 1] < array[x1, y1]) findRoute(x1, y1 - 1, array, path);
 	}
 
 
