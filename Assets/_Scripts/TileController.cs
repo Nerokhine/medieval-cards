@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class TileController : MonoBehaviour {
 	public static GameObject selectedTile = null;
+
 	public static Color32 originalColor = new Color32(255,255,255,20);
 	public static Color32 highlightColor = new Color32(255,255,255,100);
 	public static Color32 selectedColor = new Color32(255,255,255,150);
 
+
 	public int x;
 	public int z;
+
+	public bool characterPath;
 	public GameObject tileSpawner;
 	public GameObject entity;
 	public GameObject leftWall;
@@ -28,6 +32,7 @@ public class TileController : MonoBehaviour {
 	void Start(){
 		entity = null;
 		tileSpawner = transform.parent.gameObject;
+		characterPath = false;
 	}
 
 	void OnMouseEnter () {
@@ -47,7 +52,9 @@ public class TileController : MonoBehaviour {
 
 	void OnMouseOver () {
 		if (Input.GetMouseButtonDown (0)) { // left click
-			if (entity == null && selectedTile == null) {
+			if (characterPath) {
+				// dcharacter will be passing over these tiles
+			}else if (entity == null && selectedTile == null) {
 				if(Input.GetKey(KeyCode.Space)){
 					playerConstruction ();
 				}else{
@@ -107,14 +114,14 @@ public class TileController : MonoBehaviour {
 		
 
 	void wallConstruction(){
-		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("buildings/tower"), tileSpawner.transform);
+		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("_Prefabs/Tower"), tileSpawner.transform);
 		tileObject.transform.localScale =  new Vector3(10f, 10f, 10f);
 		entity = tileObject;
 
 		if (x < Initial.dimX - 1) {
 			TileController rightObject = Initial.tiles [x + 1, z].GetComponentInChildren<TileController> ();
-			if (rightObject.entity != null) {
-				rightWall = (GameObject)Instantiate (Resources.Load ("buildings/tower"), tileSpawner.transform);
+			if (rightObject.entity != null && rightObject.entity.tag == "Wall") {
+				rightWall = (GameObject)Instantiate (Resources.Load ("_Prefabs/Tower"), tileSpawner.transform);
 				rightWall.transform.localScale = new Vector3 (15.5f, 10f, 10f);
 				rightWall.transform.localPosition = new Vector3 (
 					0.5f,
@@ -127,8 +134,8 @@ public class TileController : MonoBehaviour {
 
 		if (x > 0) {
 			TileController leftObject = Initial.tiles [x - 1, z].GetComponentInChildren<TileController> ();
-			if (leftObject.entity != null) {
-				leftWall = (GameObject)Instantiate (Resources.Load ("buildings/tower"), tileSpawner.transform);
+			if (leftObject.entity != null && leftObject.entity.tag == "Wall") {
+				leftWall = (GameObject)Instantiate (Resources.Load ("_Prefabs/Tower"), tileSpawner.transform);
 				leftWall.transform.localScale = new Vector3 (15.5f, 10f, 10f);
 				leftWall.transform.localPosition = new Vector3 (
 					-0.5f,
@@ -141,8 +148,8 @@ public class TileController : MonoBehaviour {
 
 		if (z < Initial.dimZ - 1) {
 			TileController topObject = Initial.tiles [x, z + 1].GetComponentInChildren<TileController> ();
-			if (topObject.entity != null) {
-				topWall = (GameObject)Instantiate (Resources.Load ("buildings/tower"), tileSpawner.transform);
+			if (topObject.entity != null && topObject.entity.tag == "Wall") {
+				topWall = (GameObject)Instantiate (Resources.Load ("_Prefabs/Tower"), tileSpawner.transform);
 				topWall.transform.localScale = new Vector3 (10f, 15.5f, 10f);
 				topWall.transform.localPosition = new Vector3 (
 					0,
@@ -155,8 +162,8 @@ public class TileController : MonoBehaviour {
 
 		if (z > 0) {
 			TileController bottomObject = Initial.tiles [x, z - 1].GetComponentInChildren<TileController> ();
-			if (bottomObject.entity != null) {
-				bottomWall = (GameObject)Instantiate (Resources.Load ("buildings/tower"), tileSpawner.transform);
+			if (bottomObject.entity != null && bottomObject.entity.tag == "Wall") {
+				bottomWall = (GameObject)Instantiate (Resources.Load ("_Prefabs/Tower"), tileSpawner.transform);
 				bottomWall.transform.localScale = new Vector3 (10f, 15.5f, 10f);
 				bottomWall.transform.localPosition = new Vector3 (
 					0,
@@ -211,6 +218,7 @@ public class TileController : MonoBehaviour {
 				foreach (Vector2 vector in path) {
 					if (vector.x == x && vector.y == y) {
 						array [x, y] = 2;
+						getController (x, y).characterPath = true;
 					}
 				}
 			}
@@ -364,7 +372,7 @@ public class TileController : MonoBehaviour {
 			xAmt = 1;
 			rotationAmt = 90f;
 		}
-
+		// pass over control of the object to the next tile
 		getController (x + xAmt, z + zAmt).entity = entity;
 		getController (x + xAmt, z + zAmt).entity.transform.parent = Initial.tiles [x + xAmt, z + zAmt].transform;
 		entity = null;
@@ -379,7 +387,8 @@ public class TileController : MonoBehaviour {
 
 		if (!last) {
 			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().enabled = false;
-		} else {
+		} else { // last
+			getController(x + xAmt, z + zAmt).characterPath = false;
 			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().SetFloat ("Walk", 0);
 			Initial.tiles [x + xAmt, z + zAmt].GetComponentInChildren<Animator> ().SetFloat ("Run", 0f);
 
@@ -390,6 +399,8 @@ public class TileController : MonoBehaviour {
 				yield return new WaitForSeconds (0.01f);
 			}
 		}
+
+		characterPath = false;
 	
 		fin ();
 		yield return null;
