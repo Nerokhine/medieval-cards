@@ -178,7 +178,7 @@ public class TileController : MonoBehaviour {
 
 
 	void playerConstruction(){
-		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("characters/Prefabs/Char_2"), tileSpawner.transform);
+		GameObject tileObject = (GameObject)Instantiate (Resources.Load ("_Prefabs/Villager"), tileSpawner.transform);
 		tileObject.transform.localScale =  new Vector3(0.2f, 0.2f, 0.2f);
 		entity = tileObject;
 
