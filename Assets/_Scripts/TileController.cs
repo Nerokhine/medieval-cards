@@ -25,9 +25,6 @@ public class TileController : MonoBehaviour {
 		Right
 	}
 
-
-
-
 	void Start(){
 		entity = null;
 		tileSpawner = transform.parent.gameObject;
@@ -51,11 +48,24 @@ public class TileController : MonoBehaviour {
 	void OnMouseOver () {
 		if (Input.GetMouseButtonDown (0)) { // left click
 			if (entity == null && selectedTile == null) {
-				//wallConstruction ();
-				playerConstruction ();
+				if(Input.GetKey(KeyCode.Space)){
+					playerConstruction ();
+				}else{
+					wallConstruction ();
+				}
+				if (selectedTile != null) {
+					selectedTile.GetComponent<TileController> ().Select (false);
+					selectedTile = null;
+				}
 			} else {
-				if (selectedTile != null && selectedTile.GetComponent<TileController> ().entity.tag == "Unit") {
-					if (selectedTile != gameObject) { // cant move to yourself
+				if(selectedTile == gameObject){ // deselect self
+					if (selectedTile != null) {
+						selectedTile.GetComponent<TileController> ().Select (false);
+						selectedTile = null;
+					}
+				}else if (selectedTile != null && selectedTile.GetComponent<TileController> ().entity != null && 
+					selectedTile.GetComponent<TileController> ().entity.tag == "Unit") {
+					if (entity == null) { // cant move to a location with an entity
 						selectedTile.GetComponent<TileController> ().moveToLocation (new Vector2 (x, z));
 					}
 					selectedTile.GetComponent<TileController> ().Select (false);
@@ -64,8 +74,13 @@ public class TileController : MonoBehaviour {
 					if (selectedTile != null) {
 						selectedTile.GetComponent<TileController> ().Select (false);
 					}
-					selectedTile = gameObject;
-					Select (true);
+					if (entity != null) { // don't select nothing
+						selectedTile = gameObject;
+						Select (true);
+					} else {
+						selectedTile.GetComponent<TileController> ().Select (false);
+						selectedTile = null;
+					}
 				}
 
 			}
@@ -160,12 +175,6 @@ public class TileController : MonoBehaviour {
 		tileObject.transform.localScale =  new Vector3(0.2f, 0.2f, 0.2f);
 		entity = tileObject;
 
-		if (selectedTile != null) {
-			selectedTile.GetComponent<TileController> ().Select (false);
-			selectedTile = null;
-		}
-
-
 	}
 
 	public void moveToLocation(Vector2 location){
@@ -214,7 +223,7 @@ public class TileController : MonoBehaviour {
 			debug += "\n";
 		}
 
-		Debug.Log (debug);
+		//Debug.Log (debug);
 
 		return path;
 
